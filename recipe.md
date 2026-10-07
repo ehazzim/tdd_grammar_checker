@@ -6,18 +6,21 @@ I want to verify that a text starts with a capital letter and ends with a suitab
 
 ## 2. Design the Function Signature
 
-def grammar_checker(text):
+def check_grammar(text):
 
-    Parameters: (list all parameters and their types)
-        text: a string containing words that start with capital letter and end with
-        suitable punctuation mark
+    Parameters:
+        text: str - a string representing a sentence or text to check
 
-    Returns: (state the return value and its type)
-        a boolean value determining whether grammar correct (True) or incorrect
-        (False)
+    Returns:
+        bool - True if text starts with an uppercase letter AND ends with 
+               a valid punctuation mark ('.', '!', '?'); False otherwise
 
-    Side effects: (state any side effects)
-        This function doesn't print anything or have any other side-effects
+    Side effects:
+        None
+
+    Raises:
+        TypeError: If `text` is not a string
+        ValueError: If `text` is an empty string
 
 ## 3. Create Examples as Tests
 
@@ -27,27 +30,33 @@ _Make a list of examples of what the function will take and return._
 # EXAMPLE
 
 """
-Given text with a string of words and punctuation
-mark, return True
+1. Valid inputs (Return True)
 """
-
-
-"""
-Given text where first letter lowercase, return False
-"""
+# "Hello, world." -> True
+# "That's awesome!" -> True
 
 """
-If text has no punctuation mark at end, return False
+2. Invalid start character (Return False)
 """
+# "hello, world." -> False (starts with lowercase)
+# "123 Hello." -> False (starts with digit, not capital letter)
 
 """
-Throw an error if no string is inputted
+3. Invalid end character (Return False)
 """
+# "Hello, world" -> False (missing punctuation)
+# "Hello, world," -> False (ends with comma, not sentence-ending mark)
 
 """
-If type of text is not string, throw an error
+4. Both invalid (Return False)
 """
+# "hello world" -> False
 
+"""
+5. Edge Cases & Errors (Raise Exceptions)
+"""
+# "" (empty string) -> raises ValueError("Text cannot be empty")
+# 12345 (non-string input) -> raises TypeError("Input must be a string")
 ```
 
 ## 4. Implement the Behaviour
@@ -59,14 +68,34 @@ Here's an example for you to start with:
 ```python
 # EXAMPLE
 
-from lib.grammer_checker import *
+import pytest
+from lib.grammar_checker import check_grammar
 
-"""
-Given text with a string of words and punctuation
-mark, return True
-"""
-def test_correct_input():
-    pass
+def test_valid_sentence_with_period():
+    assert check_grammar("Hello, world.") == True
+
+def test_valid_sentence_with_question_mark():
+    assert check_grammar("How are you?") == True
+
+def test_valid_sentence_with_exclamation_mark():
+    assert check_grammar("This is great!") == True
+
+def test_lowercase_first_letter_returns_false():
+    assert check_grammar("hello, world.") == False
+
+def test_missing_ending_punctuation_returns_false():
+    assert check_grammar("Hello, world") == False
+
+def test_invalid_ending_punctuation_returns_false():
+    assert check_grammar("Hello, world,") == False
+
+def test_empty_string_raises_value_error():
+    with pytest.raises(ValueError):
+        check_grammar("")
+
+def test_non_string_input_raises_type_error():
+    with pytest.raises(TypeError):
+        check_grammar(12345)
 ```
 
 Ensure all test function names are unique, otherwise pytest will ignore them!
